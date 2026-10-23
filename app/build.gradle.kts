@@ -53,6 +53,10 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        // java.time.* is used across the app (expiry/FEFO dates) but only exists on
+        // API 26+; minSdk is 24. Desugaring backports it — without this, lint NewApi
+        // fails the build AND the app would crash on Android 7.x devices.
+        isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions { jvmTarget = "17" }
     buildFeatures {
@@ -68,6 +72,7 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.runtime.ktx)
