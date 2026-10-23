@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Pharmacy logo mark: a bold medical cross in white with a gold accent
+     dot, drawn for the 108x108 adaptive-icon canvas. Referenced by
+     ic_launcher_foreground.xml and ic_launcher_full.xml. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- medical cross -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M46,26 h16 v20 h20 v16 h-20 v20 h-16 v-20 h-20 v-16 h20 z" />
+    <!-- gold accent dot (brand accent) -->
+    <path
+        android:fillColor="#F2B705"
+        android:pathData="M54,47 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0" />
+</vector>
