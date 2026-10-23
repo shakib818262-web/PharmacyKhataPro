@@ -17,7 +17,7 @@ import javax.inject.Singleton
  *  - pharmacy_profiles/{uid} holds registration metadata + subscription. This is the ONLY
  *    document the super-admin can read (see firestore.rules) — never business data.
  *  - Business data lives on-device in Room, scoped by pharmacyId; cloud business data
- *    (when sync is enabled) lives under pharmacies/{pharmacyId}/** with matching rules.
+ *    (when sync is enabled) lives under pharmacies/{pharmacyId}/... with matching rules.
  *  - Trial start is a Firestore SERVER timestamp; the client cannot extend its trial by
  *    changing the phone clock, and firestore.rules forbid the owner from editing the
  *    subscription fields after creation.
