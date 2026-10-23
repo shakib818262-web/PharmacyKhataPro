@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Auto Backup rules (API < 31). Business data lives in the Room database; we back it up
+  only via Android's encrypted Auto Backup transport. Firebase Auth tokens and device-bound
+  files are excluded. The app also offers a manual, versioned JSON export in Settings.
+-->
+<full-backup-content>
+    <include domain="database" path="pharmacy_pro.db" />
+    <include domain="sharedpref" path="session.xml" />
+    <exclude domain="sharedpref" path="com.google.firebase.installations.xml" />
+    <exclude domain="file" path="." />
+</full-backup-content>
