@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Full launcher icon as a pure-XML layer-list so the project builds and
+     pushes without binary PNG assets. On API 26+ devices this still renders
+     a proper icon; release builds may swap in generated PNG mipmaps. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/ic_launcher_background" />
+    <item
+        android:width="66dp"
+        android:height="66dp"
+        android:drawable="@drawable/ic_pharmacy_logo"
+        android:gravity="center" />
+</layer-list>
