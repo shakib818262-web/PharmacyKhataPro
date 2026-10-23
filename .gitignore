@@ -1,0 +1,17 @@
+*.iml
+.gradle/
+.kotlin/
+/local.properties
+/.idea/
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+*.keystore
+*.jks
+# Real Firebase config is provided per-developer / via CI secret — never commit a real one
+# (the CI workflow generates a placeholder for compile-only builds)
+app/google-services.json
+.env
