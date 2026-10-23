@@ -1,0 +1,56 @@
+rules_version = '2';
+// PharmacyKhata Pro — Firestore security rules
+//
+// Schema (single, consistent — the old app had 3 incompatible ones):
+//   pharmacy_profiles/{uid}            registration metadata + subscription (admin-readable metadata)
+//   pharmacies/{pharmacyId}/**         tenant business data (owner only)
+//   app_meta/admins                    { emails: [..] } super-admin allowlist (managed by Shakib only,
+//                                      edited from the Firebase console; readable by no client)
+//
+// Admin principle: the super admin (Shakib) can read pharmacy_profiles metadata
+// (who the customers are, plan, expiry) but can NEVER read a pharmacy's business data.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    function isAdmin() {
+      return request.auth != null && (
+        request.auth.token.admin == true ||
+        request.auth.token.email in get(/databases/$(database)/documents/app_meta/admins).data.emails
+      );
+    }
+
+    // ---- Registration profiles / customer metadata ----
+    match /pharmacy_profiles/{uid} {
+      // Owner can create their own profile at registration; subscription block must start as TRIAL.
+      allow create: if isOwner(uid)
+        && request.resource.data.uid == uid
+        && request.resource.data.subscription.status == 'TRIAL';
+
+      allow read: if isOwner(uid) || isAdmin();
+
+      // Owner may update profile details and lastActiveAt, but may NOT touch the
+      // subscription fields (status/plan/trialStartAt/expiresAt) — only admin can.
+      allow update: if isOwner(uid)
+        && request.resource.data.subscription == resource.data.subscription;
+      allow update: if isAdmin();
+
+      allow delete: if isAdmin();
+    }
+
+    // ---- Tenant business data: strict isolation ----
+    match /pharmacies/{pharmacyId}/{document=**} {
+      allow read, write: if isOwner(pharmacyId);
+      // NOTE: deliberately NO admin read here. The super admin sees metadata only.
+    }
+
+    // ---- Admin allowlist: console-managed only ----
+    match /app_meta/{docId} {
+      allow read, write: if false;
+    }
+  }
+}
