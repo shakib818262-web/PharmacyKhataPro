@@ -105,10 +105,11 @@ dependencies {
     implementation(libs.androidx.camera.lifecycle)
     implementation(libs.androidx.camera.view)
     implementation(libs.mlkit.barcode.scanning)
-    // CameraX exposes ListenableFuture in its public API (ProcessCameraProvider.getInstance)
-    // but only declares it at runtime scope — without this, Kotlin compile fails with
-    // "Cannot access class com.google.common.util.concurrent.ListenableFuture".
-    implementation(libs.guava.listenablefuture)
+    // CameraX exposes ListenableFuture in its public API (ProcessCameraProvider.getInstance),
+    // but the graph only supplies it at runtime scope (and the standalone listenablefuture
+    // artifact resolves to an empty conflict-avoidance stub). Full Guava on the compile
+    // classpath is the documented fix for "Cannot access class ListenableFuture".
+    implementation(libs.guava)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
