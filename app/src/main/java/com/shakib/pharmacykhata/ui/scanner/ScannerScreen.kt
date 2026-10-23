@@ -52,7 +52,9 @@ fun ScannerScreen(onResult: (String) -> Unit, onClose: () -> Unit) {
                     val providerFuture = ProcessCameraProvider.getInstance(ctx)
                     providerFuture.addListener({
                         val provider = providerFuture.get()
-                        val preview = Preview.Builder().build().also { it.surfaceProvider = previewView.surfaceProvider }
+                        // NOTE: setSurfaceProvider has two overloads, so Kotlin property syntax
+                        // (it.surfaceProvider = ...) is unresolved — call the method explicitly.
+                        val preview = Preview.Builder().build().also { it.setSurfaceProvider(previewView.surfaceProvider) }
                         val analysis = ImageAnalysis.Builder()
                             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST).build()
                         val scanner = BarcodeScanning.getClient()
