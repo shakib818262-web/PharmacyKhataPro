@@ -1,10 +1,15 @@
+@file:OptIn(androidx.camera.core.ExperimentalGetImage::class) // ImageProxy.image is opt-in
+@file:SuppressLint("UnsafeOptInUsageError") // lint's opt-in detector does not honour Kotlin @OptIn across the analyzer lambda (known false positive); the compiler opt-in above + on the helper below is the real gate
+
 package com.shakib.pharmacykhata.ui.scanner
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
@@ -28,6 +33,7 @@ import java.util.concurrent.atomic.AtomicBoolean
  * Real barcode scanner (the old app's scanner was never wired to any screen).
  * Delivers the first decoded barcode value once, then closes.
  */
+@OptIn(ExperimentalGetImage::class) // ImageProxy.image is an opt-in CameraX API
 @Composable
 fun ScannerScreen(onResult: (String) -> Unit, onClose: () -> Unit) {
     val context = LocalContext.current
@@ -60,9 +66,8 @@ fun ScannerScreen(onResult: (String) -> Unit, onClose: () -> Unit) {
                         val scanner = BarcodeScanning.getClient()
                         val executor = Executors.newSingleThreadExecutor()
                         analysis.setAnalyzer(executor) { proxy: ImageProxy ->
-                            val mediaImage = proxy.image
-                            if (mediaImage != null) {
-                                val input = InputImage.fromMediaImage(mediaImage, proxy.imageInfo.rotationDegrees)
+                            val input = proxy.toInputImage()
+                            if (input != null) {
                                 scanner.process(input)
                                     .addOnSuccessListener { codes ->
                                         val value = codes.firstOrNull()?.rawValue
@@ -84,4 +89,15 @@ fun ScannerScreen(onResult: (String) -> Unit, onClose: () -> Unit) {
         Spacer(Modifier.height(12.dp))
         OutlinedButton(onClick = onClose, modifier = Modifier.fillMaxWidth()) { Text("বন্ধ করুন") }
     }
+}
+
+/**
+ * ImageProxy.image is marked @ExperimentalGetImage. The opt-in lives on THIS helper:
+ * lint's UnsafeOptInUsage check does not see a function- or file-level @OptIn across
+ * the setAnalyzer lambda boundary, but a call to a non-opt-in helper is clean.
+ */
+@OptIn(ExperimentalGetImage::class)
+private fun ImageProxy.toInputImage(): InputImage? {
+    val media = image ?: return null
+    return InputImage.fromMediaImage(media, imageInfo.rotationDegrees)
 }
