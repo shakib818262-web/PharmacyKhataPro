@@ -5,8 +5,11 @@
   files are excluded. The app also offers a manual, versioned JSON export in Settings.
 -->
 <full-backup-content>
+    <!-- Inclusion list: with any <include> present, ONLY these paths are backed up.
+         (Lint FullBackupContent: an <exclude> is only valid inside an included path,
+         so the old excludes of never-included areas were errors, not safeguards.)
+         Firebase installations data and all other files/sharedprefs stay excluded
+         simply by not being listed here. -->
     <include domain="database" path="pharmacy_pro.db" />
     <include domain="sharedpref" path="session.xml" />
-    <exclude domain="sharedpref" path="com.google.firebase.installations.xml" />
-    <exclude domain="file" path="." />
 </full-backup-content>
