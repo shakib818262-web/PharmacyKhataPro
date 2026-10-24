@@ -23,6 +23,12 @@ object Validators {
 
     fun isValidBdPhone(input: String?): Boolean = bdPhone(input) != null
 
+    private val EMAIL = Regex("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")
+
+    /** Pragmatic email shape check for form validation (deliverability is Firebase's job). */
+    fun isValidEmail(input: String?): Boolean =
+        !input.isNullOrBlank() && EMAIL.matches(input.trim())
+
     private val EXPIRY_FORMATS = listOf(
         DateTimeFormatter.ofPattern("dd/MM/uuuu").withResolverStyle(ResolverStyle.STRICT),
         DateTimeFormatter.ofPattern("MM/uuuu").withResolverStyle(ResolverStyle.STRICT),
