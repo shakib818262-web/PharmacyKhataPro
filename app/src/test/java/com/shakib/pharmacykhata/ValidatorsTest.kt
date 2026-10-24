@@ -9,6 +9,24 @@ import org.junit.Test
 import java.time.LocalDate
 
 class ValidatorsTest {
+    @Test fun email_validAndInvalid() {
+        assertTrue(Validators.isValidEmail("jrjulian216@gmail.com"))
+        assertTrue(Validators.isValidEmail("  owner@pharmacy.com.bd "))
+        assertFalse(Validators.isValidEmail("not-an-email"))
+        assertFalse(Validators.isValidEmail("a@b"))
+        assertFalse(Validators.isValidEmail(""))
+        assertFalse(Validators.isValidEmail(null))
+    }
+
+    @Test fun friendlyError_neverRawFirebaseText() {
+        val apiKey = com.shakib.pharmacykhata.ui.auth.AuthViewModel.friendlyError(
+            Exception("An internal error has occurred. [ API key not valid. Please pass a valid API key. ]"))
+        assertFalse(apiKey.contains("API key"))
+        assertTrue(apiKey.isNotBlank())
+        val other = com.shakib.pharmacykhata.ui.auth.AuthViewModel.friendlyError(Exception("boom"))
+        assertFalse(other.contains("boom"))
+    }
+
     @Test fun phone_validFormats() {
         assertEquals("01712345678", Validators.bdPhone("01712345678"))
         assertEquals("01712345678", Validators.bdPhone("+8801712345678"))
