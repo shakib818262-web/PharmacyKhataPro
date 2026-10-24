@@ -2,10 +2,9 @@
 <!-- Device-transfer / cloud backup rules (API 31+). Mirrors backup_rules.xml. -->
 <data-extraction-rules>
     <cloud-backup>
+        <!-- Inclusion list only (see backup_rules.xml note on FullBackupContent). -->
         <include domain="database" path="pharmacy_pro.db" />
         <include domain="sharedpref" path="session.xml" />
-        <exclude domain="sharedpref" path="com.google.firebase.installations.xml" />
-        <exclude domain="file" path="." />
     </cloud-backup>
     <device-transfer>
         <include domain="database" path="pharmacy_pro.db" />
